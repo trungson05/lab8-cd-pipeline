@@ -50,7 +50,7 @@ pipeline {
         stage('CI: SonarQube Analysis') {
             steps {
                 dir('app') {
-                    withSonarQubeEnv(installationName: 'SonarQube', credentialsId: 'sonarqube-token') {
+                    withSonarQubeEnv(installationName: 'SonarQube', credentialsId: 'sonarqube-token-lab8') {
                         sh '''
                             set +x
                             export SONAR_TOKEN="$SONAR_AUTH_TOKEN"

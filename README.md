@@ -8,7 +8,7 @@ Trong job Lab 8, chọn **Pipeline script from SCM**, trỏ tới repository Lab
 
 | Cấu hình Jenkins | Giá trị pipeline sử dụng |
 | --- | --- |
-| SonarQube installation | `SonarQube`, credential `sonarqube-token` có quyền phân tích project `devops-lab8` |
+| SonarQube installation | `SonarQube`, credential `sonarqube-token-lab8` có quyền phân tích project `devops-lab8` |
 | Nexus | Credential `nexus-credentials`, managed file `maven-settings-nexus` với server ID `nexus` |
 | Docker Hub | Credential `docker-hub-credentials_1` có quyền push vào `trungson05/devops-lab8-app` |
 
