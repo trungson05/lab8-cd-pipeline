@@ -1,23 +1,22 @@
-# ===== Stage 1: BUILD =====
-FROM node:18-alpine AS builder
+# Docker Compose builds the application from a clean checkout.
+FROM maven:3.9-eclipse-temurin-17-alpine AS build
+WORKDIR /src
+COPY app/pom.xml .
+COPY app/src ./src
+RUN mvn -B -ntp clean verify
+
+FROM eclipse-temurin:17-jre-alpine AS runtime
 WORKDIR /app
-COPY app/package.json .
-RUN npm install --production
-
-# ===== Stage 2: PRODUCTION =====
-FROM node:18-alpine
-WORKDIR /app
-
-# Copy dependencies từ stage build
-COPY --from=builder /app/node_modules ./node_modules
-COPY app/ .
-
-# Non-root user (bảo mật) , ID >1000 là ok
 RUN addgroup -g 1001 -S appgroup && adduser -S appuser -u 1001 -G appgroup
 USER appuser
-
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
+    CMD wget -q --spider "http://127.0.0.1:${PORT:-3000}/health" || exit 1
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
 
-CMD ["node", "server.js"]
+# Jenkins packages and fingerprints this JAR before building the image.
+FROM runtime AS ci
+COPY app/target/devops-lab8-app.jar /app/app.jar
+
+FROM runtime AS standalone
+COPY --from=build /src/target/devops-lab8-app.jar /app/app.jar

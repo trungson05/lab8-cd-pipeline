@@ -1,0 +1,7 @@
+**
+!app/
+!app/pom.xml
+!app/src/
+!app/src/**
+!app/target/
+!app/target/devops-lab8-app.jar
